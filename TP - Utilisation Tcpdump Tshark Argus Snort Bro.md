@@ -5,66 +5,6 @@
 * Utilisation pour générer des informations
 
 
-## Préparation
-
-Utiliser l'ISO Security Onion pour lancer une VM avec Virtual Box.
-
-Créer un nouvel utilisateur et récupérer l'IP de la VM pour y accéder en SSH depuis votre client habituel.
-
-```
-sudo su  
-\#Put tpuser as password
-adduser tpuser
-addgroup tpuser sudo
-
-
-# Quelques petites corrections
-
-mkdir /var/log/barnyard2
-cp /etc/nsm/templates/barnyard2/barnyard2.conf /etc/nsm/templates/barnyard2/barnyard2.conf.bak
-cat << EOF >> /etc/nsm/templates/barnyard2/barnyard2.conf
-config utc
-config logdir: /var/log/snort
-config daemon
-input unified2
-config reference_file:      /etc/nsm/templates/snort/reference.config
-config classification_file: /etc/nsm/templates/snort/classification.config
-config gen_file:            /etc/nsm/templates/snort/gen-msg.map
-config sid_file:           /etc/nsm/rules/sid-msg.map
-output database: log, mysql, user=root dbname=snorby host=127.0.0.1
-EOF
-
-/usr/bin/barnyard2 -c /etc/nsm/templates/barnyard2/barnyard2.conf 
-
-cd /opt/snorby/
-RAILS_ENV=production bundle exec rake snorby:setup
-RAILS_ENV=production bundle exec rails runner 'User.create(:name => "tpuser", :email => "tpuser@rims.fr", :password => "tpuser", :password_confirmation => "tpuser", :admin => true)'
-# snorby accessible sur https://$IP:444
-
-apt-get install librrds-perl
-mkdir /var/log/snort/
-ln -s /usr/bin/rabins /usr/local/bin/rabins
-
-# Et mon IP ?
-ip a 
-```
-
-
-
-
-
-
-** Optionnel: ELK
-```
-add-apt-repository ppa:openjdk-r/ppa
-apt-get update 
-apt-get install openjdk-8-jdk
-```
-
-```
-wget https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/5.0.0-alpha1/elasticsearch-5.0.0-alpha1.deb https://download.elastic.co/logstash/logstash/packages/debian/logstash_5.0.0~alpha1-1_all.deb https://download.elastic.co/kibana/kibana/kibana_5.0.0-alpha1_amd64.deb https://download.elastic.co/beats/packetbeat/packetbeat-5.0.0-alpha1-x86_64.rpm https://download.elastic.co/beats/filebeat/filebeat-5.0.0-alpha1-x86_64.rpm
-dpkg -i *.deb
-```
 
 ## Présentation des logiciels
 Rappel:  
@@ -420,6 +360,9 @@ RTP Analysis
 ```
 tshark -nr rtp.pcap -d udp.port==1-65535,rtp -T fields -e frame.number -e frame.time_epoch -e ip.src -e ip.dst -e ip.dsfield.dscp -e ip.proto -e udp.srcport -e udp.dstport -e rtp.timestamp -e rtp.seq -2 -E separator=";" -E header=y > rtp.csv
 ```
+
+#### Liens
+[http://www.packetlevel.ch/html/tshark/tsharkfilt.html]()
 
 ### Argus
 
@@ -958,25 +901,56 @@ Commencing packet processing (pid=1656)
 03/13-14:20:56.800271  [**] [1:9990008:0] AUDIT TOOLS SkipFish User-Agent detected more than 150 times in 60 seconds [**] [Priority: 0] {TCP} 192.168.56.1:53482 -> 192.168.56.101:80
 ```
 
+#### Télécharger des règles
+
+##### sid 
+
+The sid keyword is used to uniquely identify Snort rules. This information allows output plugins to identify rules easily. This option should be used with the rev keyword. (See section [*])
+
+    $<$100 Reserved for future use
+    100-999,999 Rules included with the Snort distribution
+    $>=$1,000,000 Used for local rules
+
+The file sid-msg.map contains a mapping of alert messages to Snort rule IDs. This information is useful when post-processing alert to map an ID to an alert message.
+
+* If the number (SID) is less than 1000000, it is a SourceFire (link is external) rule (the company that maintains the snort source code). In this case you can get more information about the rule by going to https://www.snort.org/rule_docs (link is external).
+
+* If the number is between 1000000 and 2000000, it is a snort community rule. Unfortunately, in this case, the best source of information will be the rule itself which can be downloaded from Community Rules (link is external). As a general rule we don't use too many community rules because they are only rarely updated.
+
+* If the number is between 2000000 and 3000000 it comes from emergingthreats.net (link is external) and you can get more information by going to http://doc.emergingthreats.net/bin/view/Main/ (link is external)<sid number> .
 
 
-### Utlisation de Snort
+##### gid
+
+The gid keyword (generator id) is used to identify what part of Snort generates the event when a particular rule fires. For example gid 1 is associated with the rules subsystem and various gids over 100 are designated for specific preprocessors and the decoder. See etc/generators in the source tree for the current generator ids in use. Note that the gid keyword is optional and if it is not specified in a rule, it will default to 1 and the rule will be part of the general rule subsystem. To avoid potential conflict with gids defined in Snort (that for some reason aren't noted it etc/generators), it is recommended that values starting at 1,000,000 be used. For general rule writing, it is not recommended that the gid keyword be used. This option should be used with the sid keyword. 
+
+The file etc/gen-msg.map contains contains more information on preprocessor and decoder gids.
+
+
+### Utilisation de Snort
 
 Pour scanner un PCAP à partir de Snort 2.9
 
 ```
-snort --daq pcap --daq-mode read-file -r pcaps/q1.pcap -c /etc/nsm/templates/snort/snort.conf
+snort --daq pcap --daq-mode read-file -r pcaps/q1.pcap -c /etc/snort/snort.conf
 ```
  
 Pour lire un fichier d'alerte unified2
 
 ```
 u2spewfoo /var/log/snort/snort.unified2.*
+```
+
+Quels signatures ont matchées ?
+
+```
+u2spewfoo /var/log/snort/snort.log.*  | grep sig\ id
 ``` 
  
 #### Liens
 [http://d2zmdbbm9feqrf.cloudfront.net/2014/usa/pdf/BRKSEC-2025.pdf]()
 [http://repo.hackerzvoice.net/depot_madchat/reseau/ids%7Cnids/L'%E9criture%20de%20r%E8gles%20Snort.htm]()
+[http://blog.snort.org/2015/03/basic-snort-usage.html]()
 
 ### Bro
 
@@ -1001,7 +975,7 @@ bro -r monfichier.pcap
 
 Bro écrira les fichiers de log dans le répertoire local.
 
-Il est intéressant d'ajouter la configuration par défaut fournir par Security Onion dans /opt/bro/share/bro/site/local.bro en lancant Bro avec
+Il est intéressant d'ajouter la configuration par défaut fournir par Security Onion dans  en lancant Bro avec
 
 ```
 bro -r monfichier.pcap local
@@ -1100,8 +1074,4 @@ bro -r pcaps/q1.pcap  -C extract-all-files.bro
 | Metadata          | Bro                      |
 | Alert Data        | Snort, Bro               |
 
-### Cas 1
 
-````
-
-``
