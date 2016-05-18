@@ -60,24 +60,14 @@ ln -s /usr/bin/rabins /usr/local/bin/rabins
 
 ```
 
-
-```
-
-
-include $RULE_PATH/local.rules
-
-# s'enregister sur snort.com pour récupérer le oinkcode
-sed -i 's|/usr/local/etc/snort/|/etc/snort/|g' /etc/snort/pulledpork.conf
-sed -i 's/<oinkcode>/VOTREOINKCODE/g' /etc/snort/pulledpork.conf
-#sed -i 's@rule_url=https://www.snort.org/reg-rules/|opensource.gz|<oinkcode>@#rule_url=https://www.snort.org/reg-rules/|opensource.gz|<oinkcode>@g' /etc/snort/pulledpork.conf
-#sed -i 's@rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|<oinkcode>@#rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|<oinkcode>@g' /etc/snort/pulledpork.conf
-sed -i 's@#rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@g' /etc/snort/pulledpork.conf
-sed -i 's@# snort_version=2.9.0.0@snort_version=2.9.8.2@g' /etc/snort/pulledpork.conf
-```
-
 Pour chaque exercice, indiquer les commande utilisées et copier un extrait du retour terminal de chaque commande.
 
 Les réponses les plus élégantes (ligne de commande précise) seront valorisées en bonus. Il est important de montrer de quelel façon vous souhaitez obtenir l'information.
+
+Récupérer les pcaps depuis:
+```
+wget https://cloud.jmanteau.fr/index.php/s/5P2CYLmwrgwjcYa/download
+```
 
 # Exercice 1
 
