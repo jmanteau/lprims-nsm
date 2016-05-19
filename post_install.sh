@@ -3,10 +3,10 @@
 yum -y install wget git unzip
 cd /etc/yum.repos.d/
 wget http://download.opensuse.org/repositories/network:bro/CentOS_7/network:bro.repo
-yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 cd
-yum -y install wireshark argus argus argus-clients bro tcpdump perl-libwww-perl perl-Crypt-SSLeay perl-Archive-Tar perl-Sys-Syslog perl-LWP-Protocol-https https://www.snort.org/downloads/snort/daq-2.0.6-1.centos7.x86_64.rpm https://www.snort.org/downloads/snort/snort-2.9.8.2-1.centos7.x86_64.rpm
+yum install -y wireshark argus argus argus-clients bro tcpdump perl-libwww-perl perl-Crypt-SSLeay perl-Archive-Tar perl-Sys-Syslog perl-LWP-Protocol-https https://www.snort.org/downloads/snort/daq-2.0.6-1.centos7.x86_64.rpm https://www.snort.org/downloads/snort/snort-2.9.8.2-1.centos7.x86_64.rpm
 
 git clone https://github.com/shirkdog/pulledpork.git
 cp pulledpork/pulledpork.pl /usr/local/bin/
@@ -14,7 +14,7 @@ chmod +x /usr/local/bin/pulledpork.pl
 cp -v pulledpork/etc/*.conf /etc/snort/
 
 mkdir /etc/snort/rules/iplists
-touch /etc/snort/rules/iplists/default.blacklist
+touch /etc/snort/rules/black_list.rules
 touch /etc/snort/rules/local.rules
 sed -i 's@# output unified2: filename merged.log, limit 128, nostamp, mpls_event_types, vlan_event_types@output unified2: filename snort.log, limit 128@g' /etc/snort/snort.conf
 sed -i 's@var RULE_PATH /etc/snort/rules@var RULE_PATH rules@g' /etc/snort/snort.conf
@@ -41,5 +41,6 @@ sed -i 's@# snort_version=2.9.0.0@snort_version=2.9.8.2@g' /etc/snort/pulledpork
 
 sed -i 's/ARGUS_BIND_IP/#ARGUS_BIND_IP/g' /etc/argus.conf
 
-export PATH=/opt/bro/bin:$PATH
+echo "export PATH=/opt/bro/bin:$PATH" >> /etc/profile
 ln -s /usr/bin/rabins /usr/local/bin/rabins
+pulledpork.pl  -c /etc/snort/pulledpork.conf
