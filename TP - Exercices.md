@@ -2,72 +2,32 @@
 
 Installer Centos 7 avec
 
-4096 RAM
+à minima 2048 de RAM mais 4096 RAM est préférable.
 2 CPU
 64Mo Mémoire Vidéo
 Interface réseau bridgée
 
-Une fois l'installation finie, se connecter avec le mot de passe root créé pendant l'installation. Lancer dhclient pour récuperer une IP en DHCP ou la définir. Récuperer l'IP et se connecter en SSH via son poste.
+Une fois l'installation finie, se connecter avec le mot de passe root créé pendant l'installation. Lancer ``dhclient`` pour récuperer une IP en DHCP ou la définir statiquement. Récuperer l'IP et se connecter en SSH via son poste.
 
-Passer les commandes suivantes pour finir l'installation
+Passer les commandes suivantes en root pour finir l'installation.
 
 ```
-yum install wget git
-cd /etc/yum.repos.d/
-wget http://download.opensuse.org/repositories/network:bro/CentOS_7/network:bro.repo
-yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum -y install wget
+wget https://raw.githubusercontent.com/jmanteau/lprims-nsm/master/post_install.sh
+bash post_install.sh
+source /etc/profile
+```
+Si les PCAPS n'ont pas été récupéré, les prendre avec
 
-cd
-yum install wireshark argus argus argus-clients bro tcpdump perl-libwww-perl perl-Crypt-SSLeay perl-Archive-Tar perl-Sys-Syslog perl-LWP-Protocol-https https://www.snort.org/downloads/snort/daq-2.0.6-1.centos7.x86_64.rpm https://www.snort.org/downloads/snort/snort-2.9.8.2-1.centos7.x86_64.rpm
-
-git clone https://github.com/shirkdog/pulledpork.git
-cp pulledpork/pulledpork.pl /usr/local/bin/
-chmod +x /usr/local/bin/pulledpork.pl
-cp -v pulledpork/etc/*.conf /etc/snort/
-
-mkdir /etc/snort/rules/iplists
-touch /etc/snort/rules/iplists/default.blacklist
-touch /etc/snort/rules/local.rules
-sed -i 's@# output unified2: filename merged.log, limit 128, nostamp, mpls_event_types, vlan_event_types@output unified2: filename snort.log, limit 128@g' /etc/snort/snort.conf
-sed -i 's@var RULE_PATH /etc/snort/rules@var RULE_PATH rules@g' /etc/snort/snort.conf
-sed -i 's@var SO_RULE_PATH ../so_rules@var SO_RULE_PATH so_rules@g' /etc/snort/snort.conf
-sed -i 's@var PREPROC_RULE_PATH ../preproc_rules@var PREPROC_RULE_PATH preproc_rules@g' /etc/snort/snort.conf
-sed -i 's@var WHITE_LIST_PATH ../rules@var WHITE_LIST_PATH rules@g' /etc/snort/snort.conf
-sed -i 's@var BLACK_LIST_PATH ../rules@var BLACK_LIST_PATH rules@g' /etc/snort/snort.conf
-sed -i 's@ipvar HOME_NET any@ipvar HOME_NET [192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]@g' /etc/snort/snort.conf
-
-sed -i 's@include $RULE_PATH@#include $RULE_PATH@g' /etc/snort/snort.conf
-sed -i 's@#include $RULE_PATH/local.rules@include $RULE_PATH/local.rules \n include $RULE_PATH/snort.rules@g' /etc/snort/snort.conf
-mkdir /usr/local/lib/snort_dynamicrules
-chown -R snort:snort /usr/local/lib/snort_dynamicrules
-chmod -R 700 /usr/local/lib/snort_dynamicrules
-touch /etc/snort/rules/white_list.rules
-ln -s /usr/sbin/snort /usr/local/bin/snort
-
-sed -i 's|/usr/local/etc/snort/|/etc/snort/|g' /etc/snort/pulledpork.conf
-sed -i 's@rule_url=https://www.snort.org/reg-rules/|opensource.gz|<oinkcode>@#rule_url=https://www.snort.org/reg-rules/|opensource.gz|<oinkcode>@g' /etc/snort/pulledpork.conf
-sed -i 's@rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|<oinkcode>@#rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|<oinkcode>@g' /etc/snort/pulledpork.conf
-sed -i 's@#rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@g' /etc/snort/pulledpork.conf
-sed -i 's@# snort_version=2.9.0.0@snort_version=2.9.8.2@g' /etc/snort/pulledpork.conf
-
-
-
-
-sed -i 's/ARGUS_BIND_IP/#ARGUS_BIND_IP/g' /etc/argus.conf
-
-export PATH=/opt/bro/bin:$PATH
-ln -s /usr/bin/rabins /usr/local/bin/rabins
-
+```
+wget https://cloud.jmanteau.fr/index.php/s/5P2CYLmwrgwjcYa/download
+unzip download
 ```
 
 Pour chaque exercice, indiquer les commande utilisées et copier un extrait du retour terminal de chaque commande.
 
-Les réponses les plus élégantes (ligne de commande précise) seront valorisées en bonus. Il est important de montrer de quelel façon vous souhaitez obtenir l'information.
+Les réponses les plus élégantes (ligne de commande précise) seront valorisées en bonus. Il est important de montrer de quelle façon vous souhaitez obtenir l'information.
 
-Récupérer les pcaps depuis:
-```
-wget https://cloud.jmanteau.fr/index.php/s/5P2CYLmwrgwjcYa/download
-```
 
 # Exercice 1
 
