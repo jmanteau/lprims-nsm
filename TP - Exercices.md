@@ -68,10 +68,15 @@ Ann a obtenu récemment une AppleTV configuré avec une IP statique en 192.168.1
 Votre mission est de trouver ce qu'Ann a recherché et de collecter les informations suivantes:
 
 * Quelle est la MAC adresse de l'AppleTV ?
+
 * Quel est le User Agent de l'AppleTV vu dans les requêtes web ?
-* Quels sont les quatre premiers termes recherchés (toutes les recherches incrémentales comptent) ?
+
+* Quels sont les quatre premiers termes recherchés (toutes les recherches incrémentales comptent) (indice: regarder les requetes HTTP) ?
+
 * Quel est le titre du premier film qu'Ann a cliqué (indice: viewMovie) ?
-* Quelle est l'URL complète de la bande annonce (défni par preview-url) ?
+
+* Quelle est l'URL complète de la bande annonce (défini par preview-url) ?
+
 * Quel est le dernier terme recherché par Ann ?
 
 

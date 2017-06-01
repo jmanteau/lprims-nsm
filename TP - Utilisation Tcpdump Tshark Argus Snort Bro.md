@@ -1009,6 +1009,12 @@ Avec les numéros de ports
 bro-cut service id.resp_p < conn.log | awk '{print $2 }' | sort | uniq -c | sort -rn | head
 ```
 
+L'état des connections TCP dans la capture ?
+
+```
+cat conn.log | bro-cut id.resp_h conn_state
+```
+
 TOP User Agents du traffic Web
 
 ```
@@ -1052,6 +1058,7 @@ bro-cut duration id.{orig,resp}_{h,p} < conn.log | awk '$1 >= 60 && $1 <= 120'
 Extraire les fichiers du pcap
 
 ```
+wget https://www.bro.org/sphinx/_downloads/extract-all-files.bro
 bro -r pcaps/q1.pcap  -C extract-all-files.bro
 ```
 
@@ -1061,6 +1068,56 @@ bro -r pcaps/q1.pcap  -C extract-all-files.bro
 [https://www.bro.org/current/slides/broverview-2015.pdf]()
 [http://matthias.vallentin.net/slides/berke1337-bro-intro.pdf]()
 [http://matthias.vallentin.net/slides/bro-nf.pdf]()
+
+## Bash Toolbox
+
+Affiche les XX premières lignes 
+
+```
+head -n XX
+```
+
+Recherche les lignes qui commencent par 48.124
+
+```
+grep -E "^48.124" 
+```
+
+Couper les colonnes d'un ficher: cut   
+
+* -f donne les colonnes à sélectionner (field)
+* -d donne le délimiteur (si non précisé c'est espace par défaut)
+
+Sélectionner la seconde colonne d'un fichier séparé par des espaces
+
+```
+cut -f2 
+```
+
+Sélectionner la première, deuxième et troisième colonne d'un fichier avec le point comme séparateur
+
+```
+cut -f1,2,3 -d. 
+```
+
+Sort trie par défaut par ordre alphabétique. L'option -n permet de trier par ordre numérique.
+Il est important de trier avant d'utiliser uniq. Uniq permet d'enlever les doublons. Uniq -c donne le compte en plus de chaque entrée dédupliquée.
+
+```
+sort | uniq -c
+```
+
+Cette commande permet d'extraire (-o) l'expression régulière (-E) d'une IP depuis un fichier.
+
+```
+grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' 
+```
+
+Affiche 2 ligne avant le match "mystring" et 8 lignes après
+
+```
+grep mystring -B 2 -A 8
+```
 
 ## Utilisation
 
