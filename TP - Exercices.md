@@ -20,9 +20,16 @@ source /etc/profile
 Si les PCAPS n'ont pas été récupéré, les prendre avec
 
 ```
-wget https://cloud.jmanteau.fr/index.php/s/5P2CYLmwrgwjcYa/download
+wget https://s3-eu-west-1.amazonaws.com/jmanteau/pcapsTP.zip
 unzip download
 ```
+
+Lien alternatif pour les PCAPS
+
+```
+wget https://cloud.jmanteau.fr/index.php/s/5P2CYLmwrgwjcYa/download
+```
+
 
 Pour chaque exercice, indiquer les commande utilisées et copier un extrait du retour terminal de chaque commande.
 
