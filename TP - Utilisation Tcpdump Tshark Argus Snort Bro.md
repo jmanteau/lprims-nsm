@@ -152,13 +152,15 @@ Seuls les filtres les plus utilisés sont présentés ici.
 ##### Exemples
 Permet d'afficher uniquement les paquets ftp du port 21
 
-`
+```
  # tcpdump port ftp
-`
+```
+
  ou 
-`
+
+```
  # tcpdump port 21
-`
+```
 
 Permet d'afficher les paquets qui ont pour adresse de destination et/ou sources 192.168.1.144
 
@@ -330,7 +332,7 @@ tshark -r <pcapfile> -qz io,stat,60,"COUNT(tcp.analysis.retransmission)tcp.analy
 ```
 
 Statistiques sur les hosts présents dans la capture
-````
+```
 tshark -r <pcapfile> -qz ip_hosts,tree
 ```
 
@@ -681,15 +683,26 @@ Le décodeur de paquet récupère les paquets provenant de différents types d�
 
 ##### Les préprocesseurs
  
-Les préprocesseurs sont des modules d’extension pour arranger ou modifier les paquets de données avant que le moteur de détection n’intervienne. Des exemples de préprocesseurs sont HTTP, RPC, etc. Certains préprocesseurs détectent aussi des anomalies dans les entêtes des paquets et génèrent alors des alertes.  Les préprocesseurs sont chargés et configurés en utilisant le mot clé préprocesseur. Le format de directive d'un préprocesseur dans une règle SNORT est de la forme:  	Préprocesseur \<name> : \<options>  Les différentes options propres à chaque préprocesseur sont données dans [le manuel](http://manual.snort.org/node17.html.).
+Les préprocesseurs sont des modules d’extension pour arranger ou modifier les paquets de données avant que le moteur de détection n’intervienne. Des exemples de préprocesseurs sont HTTP, RPC, etc. Certains préprocesseurs détectent aussi des anomalies dans les entêtes des paquets et génèrent alors des alertes.  
+Les préprocesseurs sont chargés et configurés en utilisant le mot clé préprocesseur. Le format de directive d'un préprocesseur dans une règle SNORT est de la forme:  
+	Préprocesseur \<name> : \<options>  
+Les différentes options propres à chaque préprocesseur sont données dans [le manuel](http://manual.snort.org/node17.html.).
 
-##### Moteur de détectionLe moteur de détection de SNORT constitue le cœur de L’IDS. Il est responsable de détecter toute activité d’intrusion dans les flux de données. Il utilise des règles qui consistent en une définition d’un ensemble de critères sur le paquets. Si un paquet correspond a une règle, une action est réalisée (typiquement une alerte). 
+##### Moteur de détection
+
+Le moteur de détection de SNORT constitue le cœur de L’IDS. Il est responsable de détecter toute activité d’intrusion dans les flux de données. Il utilise des règles qui consistent en une définition d’un ensemble de critères sur le paquets. Si un paquet correspond a une règle, une action est réalisée (typiquement une alerte). 
 
 ##### Génération d'événements
 
 Selon les décisions prises par le moteur de détection, les paquets peuvent être journalisés ou générer une alerte. La journalisation peut s’effectuer par de simples fichiers textes, des fichiers selon le format tcpdump, ou encore avec le format natif [Unified2](https://www.snort.org/faq/readme-unified2) de Snort. Ce format est maintenant la sortie par défaut de Snort. Unified2 est un format binaire qui comprend à la fois l'évenement (avec l'alerte, date, IPs, etc) et le paquet au format binaire pour analyse ultérieure.   
-￼Les modules de sortie peuvent effectuer différents opérations selon la manière dont on désire sauvegarder les informations générées par le système de journalisations d’alertes :
-* Enregistrement simple dans un fichier (comme /log/snort/alerts)* Envoyer des notifications d’événements SNMP* Enregistrer dans une base de données comme MySQL* Transformer dans un format XML* Envoyer des messages SMB (Server Message Block)...etc
+￼
+Les modules de sortie peuvent effectuer différents opérations selon la manière dont on désire sauvegarder les informations générées par le système de journalisations d’alertes :
+
+* Enregistrement simple dans un fichier (comme /log/snort/alerts)
+* Envoyer des notifications d’événements SNMP
+* Enregistrer dans une base de données comme MySQL
+* Transformer dans un format XML
+* Envoyer des messages SMB (Server Message Block)...etc
 
 
 #### Modes Sniffer et Packer Logger
@@ -956,10 +969,14 @@ u2spewfoo /var/log/snort/snort.log.*  | grep sig\ id
 
 #### Introduction
 
-Bro est un système de détection d’intrusion réseau (« Network Intrusion Detection System ») open source, disponible pour les systèmes d’exploitation de type Unix (dont Linux, FreeBSD et OpenBSD), qui analyse le trafic réseau à la recherche de toute activité suspecte (caractéristique d’une attaque ou d’une violation de la politique de sécurité en vigueur sur le réseau surveillé). 
+
+Bro est un système de détection d’intrusion réseau (« Network Intrusion Detection System ») open source, disponible pour les systèmes d’exploitation de type Unix (dont Linux, FreeBSD et OpenBSD), qui analyse le trafic réseau à la recherche de toute activité suspecte (caractéristique d’une attaque ou d’une violation de la politique de sécurité en vigueur sur le réseau surveillé). 
 
 Bro détecte les intrusions en trois étapes :  
-* la première consiste à capter le trafic réseau et à décoder les différentes couches protocolaires (de manière à en extraire la sémantique applicative). Cette étape fournit des événements de « haut niveau » qui pourront par la suite être analysés ;* la seconde (réalisée au cours du déroulement de la première étape) consiste à vérifier la présence de motifs, qui constituent des signatures d’attaques, dans la charge des paquets IP (ou du flux TCP si le ré-assemblement de flux TCP est activé) ou de certains champs des protocoles applicatifs (par exemple, HTTP dans la version évaluée du produit). Des événements sont générés en cas de concordance ;* la troisième étape consiste à analyser les événements générés lors des deux étapes précédentes par des scripts d’analyse. Cette analyse permet à la fois la détection d’attaques connues au préalable (qui sont décrites en termes de signatures ou d’événements) et d’anomalies (par exemple, la présence de connexions de certains utilisateurs vers certains services ou l’occurrence de tentatives de connexions infructueuses).
+
+* la première consiste à capter le trafic réseau et à décoder les différentes couches protocolaires (de manière à en extraire la sémantique applicative). Cette étape fournit des événements de « haut niveau » qui pourront par la suite être analysés ;
+* la seconde (réalisée au cours du déroulement de la première étape) consiste à vérifier la présence de motifs, qui constituent des signatures d’attaques, dans la charge des paquets IP (ou du flux TCP si le ré-assemblement de flux TCP est activé) ou de certains champs des protocoles applicatifs (par exemple, HTTP dans la version évaluée du produit). Des événements sont générés en cas de concordance ;
+* la troisième étape consiste à analyser les événements générés lors des deux étapes précédentes par des scripts d’analyse. Cette analyse permet à la fois la détection d’attaques connues au préalable (qui sont décrites en termes de signatures ou d’événements) et d’anomalies (par exemple, la présence de connexions de certains utilisateurs vers certains services ou l’occurrence de tentatives de connexions infructueuses).
 
 Bro fournit des logs de connection par défaut lors de l'analyse d'un fichier ou d'un pcap mais sa force réside dans son language de programmation qui permet d'extraire et d'analyser du traffic réseau.
 
