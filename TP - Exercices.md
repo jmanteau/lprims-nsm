@@ -21,7 +21,7 @@ Si les PCAPS n'ont pas été récupéré, les prendre avec
 
 ```
 wget https://s3-eu-west-1.amazonaws.com/jmanteau/pcapsTP.zip
-unzip download
+unzip pcapsTP.zip
 ```
 
 Lien alternatif pour les PCAPS
