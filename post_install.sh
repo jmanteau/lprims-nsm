@@ -7,7 +7,12 @@ yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarc
 
 cd
 yum install -y wireshark argus argus argus-clients bro tcpdump perl-libwww-perl perl-Crypt-SSLeay perl-Archive-Tar perl-Sys-Syslog perl-LWP-Protocol-https 
-yum install -y https://www.snort.org/downloads/snort/daq-2.0.6-1.centos7.x86_64.rpm https://www.snort.org/downloads/snort/snort-2.9.9.0-1.centos7.x86_64.rpm
+
+# Check version
+yum install -y https://www.snort.org/downloads/snort/daq-2.0.6-1.centos7.x86_64.rpm        
+yum install -y https://www.snort.org/downloads/snort/snort-2.9.11.1-1.centos7.x86_64.rpm
+ln -s /usr/lib64/libdnet.so.1.0.1 /usr/lib64/libdnet.1
+###
 
 git clone https://github.com/shirkdog/pulledpork.git
 cp pulledpork/pulledpork.pl /usr/local/bin/
