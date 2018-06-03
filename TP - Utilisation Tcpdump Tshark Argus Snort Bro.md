@@ -33,7 +33,7 @@ Filter BPF to analyze the PCAP.
 
 Full PCAP analysis at each run.
 
-### [Wireshark summary](#wireshark)
+### [Wireshark summary](#wireshark/tshark)
 
 Input: PCAP
 
@@ -62,6 +62,10 @@ Operator can query the logs files produced with bro clients.
 Input: PCAP, traffic copy
 
 Produce alerts log according to a set of rules. Traffic are preprocessed according to each protocol before being feeded to the rules. The rules are downloaded or locally written. Each rule typically match an exploit or malicious behaviour.
+
+### [Bash commands](#bash-toolbox)
+
+Some bash commands useful to mix tools outputs or to search inside files.
 
 
 ## Présentation détaillées des logiciels
@@ -270,6 +274,8 @@ tcpdump 'tcp[13] = 6'
 [https://staff.washington.edu/dittrich/talks/core02/tools/tcpdump-filters.txt  ]()
 [https://blog.wains.be/2007/2007-10-01-tcpdump-advanced-filters.md]()
 
+[Back to top](#utilisation)
+
 ### Wireshark/tshark
 
 
@@ -410,6 +416,8 @@ tshark -nr rtp.pcap -d udp.port==1-65535,rtp -T fields -e frame.number -e frame.
 
 #### Liens
 [http://www.packetlevel.ch/html/tshark/tsharkfilt.html]()
+
+[Back to top](#utilisation)
 
 ### Argus
 
@@ -691,6 +699,8 @@ Lire également:
 [http://qosient.com/argus/presentations/Argus.FloCon.2014.Past.Present.Future.pdf]()  
 [http://help.it.ox.ac.uk/sites/ithelp/files/resources/network_security_documents_itss-argus.pdf]()  
 [http://qosient.com/argus/presentations/Argus.FloCon.2014.Metadata.Tutorial.pdf]()
+
+[Back to top](#utilisation)
 
 ### Snort
 
@@ -1010,6 +1020,8 @@ u2spewfoo /var/log/snort/snort.log.*  | grep sig\ id
 [http://repo.hackerzvoice.net/depot_madchat/reseau/ids%7Cnids/L'%E9criture%20de%20r%E8gles%20Snort.htm]()
 [http://blog.snort.org/2015/03/basic-snort-usage.html]()
 
+[Back to top](#utilisation)
+
 ### Bro
 
 #### Introduction
@@ -1130,6 +1142,8 @@ bro -r pcaps/q1.pcap  -C extract-all-files.bro
 [https://www.bro.org/current/slides/broverview-2015.pdf]()
 [http://matthias.vallentin.net/slides/berke1337-bro-intro.pdf]()
 [http://matthias.vallentin.net/slides/bro-nf.pdf]()
+
+[Back to top](#utilisation)
 
 ## Bash Toolbox
 

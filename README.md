@@ -13,7 +13,7 @@ Ce cours a pour buts :
 
 
 
-Le support de cours est situé [ici](https://github.com/jmanteau/lprims-nsm/blob/master/NSM_Cours_2.0.odp)
+Le support de cours est situé [ici](https://github.com/jmanteau/lprims-nsm/raw/master/NSM_Cours_2.0.odp)
 
 Le texte du TP est situé [ici](https://github.com/jmanteau/lprims-nsm/blob/master/TP%20-%20Exercices.md)
 
