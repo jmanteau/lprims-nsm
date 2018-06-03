@@ -41,7 +41,7 @@ ln -s /usr/sbin/snort /usr/local/bin/snort
 sed -i 's|/usr/local/etc/snort/|/etc/snort/|g' /etc/snort/pulledpork.conf
 sed -i 's@rule_url=https://www.snort.org/reg-rules/|opensource.gz|<oinkcode>@#rule_url=https://www.snort.org/reg-rules/|opensource.gz|<oinkcode>@g' /etc/snort/pulledpork.conf
 sed -i 's@rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|<oinkcode>@#rule_url=https://www.snort.org/reg-rules/|snortrules-snapshot.tar.gz|<oinkcode>@g' /etc/snort/pulledpork.conf
-sed -i 's@#rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@g' /etc/snort/pulledpork.conf
+sed -i 's@#rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open-nogpl@rule_url=https://rules.emergingthreats.net/|emerging.rules.tar.gz|open@g' /etc/snort/pulledpork.conf
 sed -i 's@# snort_version=2.9.0.0@snort_version=2.9.8.2@g' /etc/snort/pulledpork.conf
 
 
@@ -50,3 +50,4 @@ sed -i 's/ARGUS_BIND_IP/#ARGUS_BIND_IP/g' /etc/argus.conf
 echo "export PATH=/opt/bro/bin:$PATH" >> /etc/profile
 ln -s /usr/bin/rabins /usr/local/bin/rabins
 pulledpork.pl  -c /etc/snort/pulledpork.conf
+sed -i '/Neutrino/ s/#alert/alert/' /etc/snort/rules/snort.rules

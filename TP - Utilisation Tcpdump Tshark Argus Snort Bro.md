@@ -1,22 +1,70 @@
-#TP Network Security Monitoring
+# TP Network Security Monitoring
 
 * Préparation
 * Présentation des logiciels utilisés (tcpdump, Wireshark/tshark, Argus, Snort, Bro)
 * Utilisation pour générer des informations
 
+## Utilisation
+
+### Résumé
+
+- Full content : copie intégrale du traffic (PCAP)  
+- Extracted content : Information extraite depuis le traffic réseau comme des fichiers  ou des pages web  
+- Session data : résumé des conversation réseaux se concentrent sur qui parle avec qui, quand et combien d'information on été échangées  
+- Transaction data: se concentre de façon plus granulaires sur les échanges et réponses dans les sessions réseaux.  
+- Statistical data: information calculée à partir des précédentes information et caractérise l'activité réseau  
+- Metadata: enrichissement des informations précédentes avec des informations tierces  
+- Alert data: remontée d'information par les outils  
+
+| Type              |           Tools           |
+| :---------------- | :-----------------------: |
+| Full Content      | tcpdump, Wireshark/tshark |
+| Extracted content |      Bro, Wireshark       |
+| Session Data      |        Argus, Bro         |
+| Transaction Data  |        Bro, tshark        |
+| Metadata          |            Bro            |
+| Alert Data        |        Snort, Bro         |
+
+### [Tcpdump summary](#tcpdump)
+
+Input: PCAP
+
+Filter BPF to analyze the PCAP.
+
+Full PCAP analysis at each run.
+
+### [Wireshark summary](#wireshark)
+
+Input: PCAP
+
+Filter BPF for capturing PCAP. Wireshark filter for analyzing PCAP.
+
+Full PCAP analysis at each run.
+
+### [Argus summary](#argus)
+
+Input: PCAP, traffic copy -> create a .arg flow level analysis file
+
+ra\* clients use the .arg file to inspect/graph/analyze the data according to operator requests.
+
+### [Bro summary](#bro)
+
+Input: PCAP, traffic copy
+
+Produce:
+* generate .log for each protocols with protocol data and incorrect protocol behaviours pattern
+* report according to custom bro analysis scripts
+
+Operator can query the logs files produced with bro clients.
+
+### [Snort summary](#snort)
+
+Input: PCAP, traffic copy
+
+Produce alerts log according to a set of rules. Traffic are preprocessed according to each protocol before being feeded to the rules. The rules are downloaded or locally written. Each rule typically match an exploit or malicious behaviour.
 
 
-## Présentation des logiciels
-Rappel:  
-
-* Full content : copie intégrale du traffic (PCAP)  
-* Extracted content : Information extraite depuis le traffic réseau comme des fichiers  ou des pages web  
-* Session data : résumé des conversation réseaux se concentrent sur qui parle avec qui, quand et combien d'information on été échangées  
-* Transaction data: se concentre de façon plus granulaires sur les échanges et réponses dans les sessions réseaux.  
-* Statistical data: information calculée à partir des précédentes information et caractérise l'activité réseau  
-* Metadata: enrichissement des informations précédentes avec des informations tierces  
-* Alert data: remontée d'information par les outils  
-
+## Présentation détaillées des logiciels
 ### tcpdump
 
 **tcpdump** est un outil de capture et d'analyse réseau. Il permet d'avoir une analyse en direct du réseau ou d'enregistrer la capture dans un fichier afin de l'analyser pour plus tard. Il permet d'écrire des filtres afin de sélectionner les paquets à capturer/analyser.
@@ -72,8 +120,7 @@ Les trois dernières lignes de la capture représentent :
     11 packets captured : c'est le nombre de paquet que tcpdump a reçu de l'OS et a traité
     22 packets received by filter : c'est le nombre de paquets qui ont été capturés car ils correspondaient aux filtres, cela ne signifie pas qu'ils auront été traités par tcpdump
     0 packets dropped by kernel : les paquets qui n'ont pas été capturés par l'OS car il n'y avait pas assez de place dans son buffer de réception
-    
-    
+
 ####Les options importantes
 
 Voici une liste des options importantes avec leurs utilités:
@@ -153,52 +200,52 @@ Seuls les filtres les plus utilisés sont présentés ici.
 Permet d'afficher uniquement les paquets ftp du port 21
 
 ```
- # tcpdump port ftp
+tcpdump port ftp
 ```
 
  ou 
 
 ```
- # tcpdump port 21
+tcpdump port 21
 ```
 
 Permet d'afficher les paquets qui ont pour adresse de destination et/ou sources 192.168.1.144
 
 
 ```
- # tcpdump host 192.168.1.144
+tcpdump host 192.168.1.144
 ```
 
 Permet d'afficher les paquets qui ont pour adresse de destination 192.168.1.144
 
 ```
- # tcpdump dst 192.168.1.144
+tcpdump dst 192.168.1.144
 ```
 
 Permet d'afficher les paquets qui ont pour adresse source 192.168.1.144
 
 ```
- # tcpdump src 192.168.1.144
+tcpdump src 192.168.1.144
 ```
 
 
 Permet d'afficher tous les paquets ftp à destination ou de sources de l'IP 192.168.1.55
 
 ```
- # tcpdump host 192.168.1.55 and port ftp
+tcpdump host 192.168.1.55 and port ftp
 ```
 
 
 Affiche tous les paquets en provenance de 192.168.1.144 vers 192.168.20.32 sur le port 21 en tcp.
 
 ```
- # tcpdump src host 192.168.1.144 and dst host 192.168.20.32 and port 21 and tcp
+tcpdump src host 192.168.1.144 and dst host 192.168.20.32 and port 21 and tcp
 ```
 
 Affiche tous les paquets en provenance de 192.168.1.144 vers 192.168.20.32 sur le port 21 en tcp.
 
 ```
- # tcpdump -x -X -s 0 src host 192.168.1.144 and dst host 192.168.20.32 and port 21 and tcp
+tcpdump -x -X -s 0 src host 192.168.1.144 and dst host 192.168.20.32 and port 21 and tcp
 ```
 
 tcpdump filter to match DHCP packets including a specific Client MAC Address:    
@@ -216,14 +263,12 @@ to find all packets with both the SYN and RST flags sey:
 
 ```
 tcpdump 'tcp[13] = 6'
-``` 
+```
 
 ##### Liens
 [http://danielmiessler.com/study/tcpdump/]()  
-[https://staff.washington.edu/dittrich/talks/core02/tools/tcpdump-filters.txt  
-]()
-[https://blog.wains.be/2007/2007-10-01-tcpdump-advanced-filters.md
-]()
+[https://staff.washington.edu/dittrich/talks/core02/tools/tcpdump-filters.txt  ]()
+[https://blog.wains.be/2007/2007-10-01-tcpdump-advanced-filters.md]()
 
 ### Wireshark/tshark
 
@@ -253,7 +298,7 @@ ip.addr == 10.0.0.1
 ```
 
 sets a conversation filter between the two defined IP addresses 
- 
+
 ```
 ip.addr==10.0.0.1  && ip.addr==10.0.0.2
 ```
@@ -339,7 +384,7 @@ tshark -r <pcapfile> -qz ip_hosts,tree
 show HTTP Requests 
 ```
 tshark -r <pcapfile> -R "tcp.port == 80 && (http.request || http.response)"  -T fields -E separator=, -E quote=d -e frame.time_epoch -e frame.number -e ip.src -e ip.dst  -e tcp.srcport -e tcp.dstport -e http.request.full_uri -e http.response.code
-``` 
+```
 Ou
 
 ```
@@ -372,7 +417,7 @@ tshark -nr rtp.pcap -d udp.port==1-65535,rtp -T fields -e frame.number -e frame.
 Argus (Audit Record Generation and Utilisation System) est un outil permettant de faire de l'audit de réseau IP.
 
 Argus peut être utilisé selon deux modes :
-  
+
 * analyse à partir d'une trace réseau existante pour en dégager des flux 'anormaux'
 * déploiement de sondes argus qui enregistrent le trafic, et exploitation des
 données générées.
@@ -467,7 +512,7 @@ ressort des flux au format argus.
 * rasplit, rastrip, ragrep: découpe, enlève des données ou recherche
 
 * ratopf: live display
- 
+
 
 Les programmes ra* prennent également en entrée des données au format Cisco
 Netflow.
@@ -678,11 +723,11 @@ On l'utilise en général pour détecter une variété d'attaques et de scans  t
 +-------+          +----------+         +----------+        +----------+
 ```
 ##### Le décodeur de paquet 
- 
+
 Le décodeur de paquet récupère les paquets provenant de différents types d’interface réseau et le prépare pour les préprocesseurs ou le  moteur de détection
 
 ##### Les préprocesseurs
- 
+
 Les préprocesseurs sont des modules d’extension pour arranger ou modifier les paquets de données avant que le moteur de détection n’intervienne. Des exemples de préprocesseurs sont HTTP, RPC, etc. Certains préprocesseurs détectent aussi des anomalies dans les entêtes des paquets et génèrent alors des alertes.  
 Les préprocesseurs sont chargés et configurés en utilisant le mot clé préprocesseur. Le format de directive d'un préprocesseur dans une règle SNORT est de la forme:  
 	Préprocesseur \<name> : \<options>  
@@ -722,7 +767,7 @@ unes seront mentionnées ici.
 
 *  −d = va livrer le paquet de données
 *  −e = montre le Data Link Layer
- 
+
 ##### Mode Packet Logger :  
 A la différence du mode Sniffer, le mode Packet Logger peut écrire les paquets sur le disque dur. Nous devons seulement assigner un répertoire dans lequel Snort peut les écrire et il va automatiquement passer en mode Packet Logger :
 
@@ -844,10 +889,10 @@ Avec :
 * <direction> : La direction de la règle : -> de A vers B, ou bien <> de A vers B et/ou de B vers A ;
 * <options> : Puis, entre paranthèses, des options permettant de filtrer les paquets qui vont lever des évènements.
 
- 
+
 
 Avec tout ceci, et la doc officielle, vous pourrez désormais écrire toutes vos règles !
- 
+
 
 Les options sont à formater de la manière suivante :
 
@@ -880,7 +925,7 @@ alert tcp any any -> $SERV_IP_TEST $HTTP_PORTS_TEST (msg:"AUDIT_TOOLS DirBuster 
 
 log tcp any any <> any 23 (session:printable;)
 ```
- 
+
 ```
 Et la sortie de Snort :
 
@@ -947,7 +992,7 @@ Pour scanner un PCAP à partir de Snort 2.9
 ```
 snort --daq pcap --daq-mode read-file -r pcaps/q1.pcap -c /etc/snort/snort.conf
 ```
- 
+
 Pour lire un fichier d'alerte unified2
 
 ```
@@ -958,8 +1003,8 @@ Quels signatures ont matchées ?
 
 ```
 u2spewfoo /var/log/snort/snort.log.*  | grep sig\ id
-``` 
- 
+```
+
 #### Liens
 [http://d2zmdbbm9feqrf.cloudfront.net/2014/usa/pdf/BRKSEC-2025.pdf]()
 [http://repo.hackerzvoice.net/depot_madchat/reseau/ids%7Cnids/L'%E9criture%20de%20r%E8gles%20Snort.htm]()
@@ -1006,8 +1051,8 @@ bro -r monfichier.pcap local
 
  * notice.log
 
- 	Identifie les activités que Bro indentifie comme potentiellement intéressante, anormale or nuisible. EN language Bro, une activité de ce type est appelée "notice"
- 	
+		Identifie les activités que Bro indentifie comme potentiellement intéressante, anormale or nuisible. EN language Bro, une activité de ce type est appelée "notice"
+		
 Le reste des logs portent des noms identiquant relativement clairement le type d'information présente (http.log, dns.log)
 
 Un résumé complet est disponible ici [http://gauss.ececs.uc.edu/Courses/c6055/pdf/bro_log_vars.pdf]() ou sur [https://www.bro.org/sphinx-git/script-reference/log-files.html]()
@@ -1136,16 +1181,5 @@ Affiche 2 ligne avant le match "mystring" et 8 lignes après
 grep mystring -B 2 -A 8
 ```
 
-## Utilisation
-
-### Résumé
-| Type              | Tools                    |
-|:------------------|:------------------------:|
-| Full Content      | tcpdump Wireshark/tshark |
-| Extracted content | Xplico, Wireshark        |
-| Session Data      | Argus                    |
-| Transaction Data  | Bro, tshark              |
-| Metadata          | Bro                      |
-| Alert Data        | Snort, Bro               |
 
 
