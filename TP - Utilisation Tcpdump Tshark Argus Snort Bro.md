@@ -33,7 +33,7 @@ Filter BPF to analyze the PCAP.
 
 Full PCAP analysis at each run.
 
-### [Wireshark summary](#wireshark/tshark)
+### [Wireshark/Tshark summary](#wireshark-and-tshark)
 
 Input: PCAP
 
@@ -276,7 +276,7 @@ tcpdump 'tcp[13] = 6'
 
 [Back to top](#utilisation)
 
-### Wireshark/tshark
+### Wireshark and Tshark
 
 
 #### Introduction
