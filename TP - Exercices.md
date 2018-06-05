@@ -39,7 +39,7 @@ Vous devez analyser le pcap pour voir comment l'accès youtube a été pertubé.
 
 * Grapher la bande passante du pcap
 
-* Lister les conversations DNS de q1.pcap avec tcpdump, tshark, argus, bro.
+* Lister les conversations DNS de exercice1.pcap avec tcpdump, tshark, argus, bro.
 
 * Quelles sont les IPs de youtube (donner les /24) ?
 
