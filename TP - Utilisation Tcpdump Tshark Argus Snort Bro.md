@@ -1156,8 +1156,10 @@ bro -r pcaps/q1.pcap  -C extract-all-files.bro
 Affiche les XX premières lignes 
 
 ```
-head -n XX
+head -n XX 
 ```
+
+
 
 Recherche les lignes qui commencent par 48.124
 
@@ -1182,6 +1184,12 @@ Sélectionner la première, deuxième et troisième colonne d'un fichier avec le
 cut -f1,2,3 -d. 
 ```
 
+Sélectionner de la deuxième à la dixième colonne d'un fichier avec la virgule comme séparateur
+
+```
+cut -f2-10 -d,
+```
+
 Sort trie par défaut par ordre alphabétique. L'option -n permet de trier par ordre numérique.
 Il est important de trier avant d'utiliser uniq. Uniq permet d'enlever les doublons. Uniq -c donne le compte en plus de chaque entrée dédupliquée.
 
@@ -1201,5 +1209,24 @@ Affiche 2 ligne avant le match "mystring" et 8 lignes après
 grep mystring -B 2 -A 8
 ```
 
+Remplacer un caractère par un retour de ligne
 
+```
+# cat test.txt
+74.125.19.113,74.125.19.138,74.125.19.139,74.125.19.100,74.125.19.101,74.125.19.102
+74.125.19.113,74.125.19.138,74.125.19.139,74.125.19.100,74.125.19.101,74.125.19.102
+74.125.19.138,74.125.19.139,74.125.19.100,74.125.19.101,74.125.19.102,74.125.19.113
+74.125.19.138,74.125.19.139,74.125.19.100,74.125.19.101,74.125.19.102,74.125.19.113
+
+# cat test.txt | tr ',' '\n'
+74.125.19.113
+74.125.19.138
+74.125.19.139
+74.125.19.100
+74.125.19.101
+74.125.19.102
+74.125.19.113
+74.125.19.138
+....
+```
 
