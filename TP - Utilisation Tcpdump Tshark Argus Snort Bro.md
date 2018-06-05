@@ -620,6 +620,12 @@ envoyés par 192.168.22.68.
 
 #### Exemples
 
+RAPPEL: créer le fichier .arg pour utiliser les client argus ra*
+
+```
+argus -r <pcapfile> -w output.arg -mAJZR
+```
+
 Lister toutes les connections TCP
 
 ```
