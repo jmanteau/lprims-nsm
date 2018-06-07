@@ -656,6 +656,12 @@ Graphe bande passant par IPs en IPV4
 ragraph sbytes dbytes saddr -M 10s -r out.arg  -title "Load" -w load.png - "ipv4"
 ```
 
+Graphe reset par source IPs avec un filtre de réseau
+```
+ragraph trans saddr -M 5m -r test.arg  -w rst.png - rst and net 10.125.0.0/16
+```
+
+
 Nombre de transaction concurrentes
 
 ```
