@@ -1018,13 +1018,13 @@ snort --daq pcap --daq-mode read-file -r pcaps/q1.pcap -c /etc/snort/snort.conf
 Pour lire un fichier d'alerte unified2
 
 ```
-u2spewfoo /var/log/snort/snort.unified2.*
+u2spewfoo /var/log/snort/snort.log.TIMESTAMP
 ```
 
 Quels signatures ont matchées ?
 
 ```
-u2spewfoo /var/log/snort/snort.log.*  | grep sig\ id
+u2spewfoo /var/log/snort/snort.log.TIMESTAMP | grep sig\ id
 ```
 
 #### Liens
