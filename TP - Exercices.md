@@ -49,9 +49,9 @@ Vous devez analyser le pcap pour voir comment l'accès youtube a été pertubé.
 
 * Combient de temps d'interruption (arrondir à la minute) ?
 
-* Que voit Snort sur ce pcap ?
+* Que voit Snort sur ce pcap (ID des signatures détectées) ?
 
-* Est-ce que les alertes vous semble justifiées ?
+* Est-ce que la/les alerte(s) vous semble justifié(es) ?
 
 * Quel est la dernière version d'Ubuntu au moment de la capture ?
 
