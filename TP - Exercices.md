@@ -47,7 +47,7 @@ Vous devez analyser le pcap pour voir comment l'accès youtube a été pertubé.
 
 * Quelle attaque a été faite ?
 
-* Combient de temps d'interruption (arrondir à la minute) ?
+* Combien de temps d'interruption (arrondir à la minute) ?
 
 * Que voit Snort sur ce pcap (ID des signatures détectées) ?
 
