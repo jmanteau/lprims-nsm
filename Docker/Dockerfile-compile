@@ -1,0 +1,182 @@
+FROM      debian:jessie
+MAINTAINER Julien Manteau 
+
+#Based on https://github.com/open-nsm/ContainNSM
+
+
+##### GLOBALS #####
+
+
+# Variables
+ENV VIRTUSER opennsm
+
+###### DEBIAN ###########
+
+
+# Install general tools
+RUN apt-get update -qq
+RUN apt-get install -yq sudo wget gawk git nano vim emacs grep coreutils
+RUN apt-get install -yq libcap-ng-dev libcap2-bin
+RUN apt-get install -yq lsof htop dstat sysstat iotop strace ltrace tshark tcpdump
+RUN apt-get install -yq argus-client argus-server
+
+# User configuration
+RUN adduser --disabled-password --gecos "" $VIRTUSER
+
+# Passwords
+RUN echo "$VIRTUSER:$VIRTUSER" | chpasswd
+RUN echo "root:opennsm" | chpasswd
+
+# Sudo
+RUN usermod -aG sudo $VIRTUSER
+
+
+######## BRO #########
+
+# Specify program
+ENV PROG argus
+# Specify source extension
+ENV EXT tar.gz
+# Specify argus server and client version to download and install
+ENV VERS 3.0.8.1
+ENV CVERS 3.0.8
+# Install directory
+ENV PREFIX /opt
+# Path should include prefix
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PREFIX/sbin:$PREFIX/bin
+
+# Install dependencies
+RUN apt-get update -qq
+RUN apt-get install -yq gcc make bison flex libpcap-dev libsasl2-dev libwrap0-dev libgeoip-dev libpcre3-dev --no-install-recommends
+
+# Compile and install argus
+USER $VIRTUSER
+WORKDIR /home/$VIRTUSER
+RUN wget --no-check-certificate http://qosient.com/argus/src/$PROG-$VERS.$EXT
+RUN tar -zxf $PROG-$VERS.$EXT
+WORKDIR /home/$VIRTUSER/$PROG-$VERS
+RUN ./configure --with-sasl --prefix=/opt && make
+USER root
+RUN make install
+RUN chmod u+s $PREFIX/sbin/argus
+
+# Compile and install argus client
+USER $VIRTUSER
+WORKDIR /home/$VIRTUSER
+RUN wget --no-check-certificate http://qosient.com/argus/src/$PROG-clients-$CVERS.$EXT
+RUN tar -zxf $PROG-clients-$CVERS.$EXT
+WORKDIR /home/$VIRTUSER/$PROG-clients-$CVERS
+RUN ./configure --with-sasl --with-GeoIP --with-libpcre --prefix=/opt && make
+USER root
+RUN make install
+
+# Cleanup
+RUN rm -rf /home/$VIRTUSER/$PROG-$VERS
+RUN rm -rf /home/$VIRTUSER/$PROG-clients-$CVERS
+
+# Environment
+WORKDIR /home/$VIRTUSER
+USER opennsm
+
+########## BRO ###########
+
+# Specify container username e.g. training, demo
+ENV VIRTUSER opennsm
+# Specify program
+ENV PROG bro
+# Specify source extension
+ENV EXT tar.gz
+# Specify Bro version to download and install (e.g. bro-2.3.1, bro-2.5)
+ENV VERS 2.5
+# Install directory
+ENV PREFIX /opt/bro
+# Path should include prefix
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PREFIX/bin
+
+# Install dependencies
+RUN apt-get update -qq
+RUN apt-get install -yq build-essential cmake make gcc g++ flex bison libpcap-dev libgeoip-dev libssl-dev python-dev zlib1g-dev libmagic-dev swig2.0 ca-certificates --no-install-recommends
+
+# Compile and install bro
+USER $VIRTUSER
+WORKDIR /home/$VIRTUSER
+RUN wget --no-check-certificate https://www.bro.org/downloads/$PROG-$VERS.$EXT && tar -xzf $PROG-$VERS.$EXT
+WORKDIR /home/$VIRTUSER/$PROG-$VERS
+RUN ./configure --prefix=$PREFIX && make
+USER root
+RUN make install
+RUN chmod u+s $PREFIX/bin/$PROG
+RUN chmod u+s $PREFIX/bin/broctl
+RUN chmod u+s $PREFIX/bin/capstats
+
+# Cleanup
+RUN rm -rf /home/$VIRTUSER/$PROG-$VERS
+
+# Environment
+WORKDIR /home/$VIRTUSER
+USER opennsm
+
+
+######## SNORT #########
+
+# Specify container username e.g. training, demo
+ENV VIRTUSER opennsm
+# Specify program
+ENV PROG snort
+# Specify source extension
+ENV EXT tar.gz
+# Specify Snort version to download and install
+ENV VERS 2.9.9.0
+# Specific libpcap to download and install
+ENV LVERS libpcap-1.7.4
+# Specific libdnet to download and install
+ENV LDVERS libdnet-1.12
+# Specific daq to download and install
+ENV DVERS daq-2.0.6
+# Install directory
+ENV PREFIX /opt
+# Path should include prefix
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PREFIX/bin
+
+# Install dependencies
+RUN apt-get update -qq
+RUN apt-get install -yq build-essential libpcre3-dev \
+  bison flex zlib1g-dev autoconf libtool --no-install-recommends
+
+# Compile and install libpcap
+RUN wget http://www.tcpdump.org/release/$LVERS.$EXT
+RUN tar zxf $LVERS.$EXT && cd $LVERS && ./configure --prefix=/usr && make && make install
+
+# Compile and install libdnet
+RUN wget https://github.com/dugsong/libdnet/archive/$LDVERS.tar.gz
+RUN tar zxf $LDVERS.tar.gz && cd libdnet-$LDVERS && ./configure --prefix=/usr --enable-shared && make && make install
+RUN echo >> /etc/ld.so.conf /usr/lib && echo >> /etc/ld.so.conf /usr/local/lib
+
+# Compile and install daq
+RUN wget --no-check-certificate https://www.snort.org/downloads/snort/$DVERS.$EXT
+RUN tar zxf $DVERS.$EXT && cd $DVERS && ./configure && make && make install
+
+#  Compile and install Snort
+USER $VIRTUSER
+WORKDIR /home/$VIRTUSER
+RUN wget --no-check-certificate https://www.snort.org/downloads/snort/$PROG-$VERS.tar.gz
+RUN tar -zxf $PROG-$VERS.$EXT
+WORKDIR /home/$VIRTUSER/$PROG-$VERS
+RUN ./configure --prefix=$PREFIX --enable-sourcefire --enable-large-pcap --enable-profile --enable-gdb --enable-linux-smp-stats && make
+USER root
+RUN make install && ldconfig
+RUN chmod u+s $PREFIX/bin/snort
+
+# Cleanup
+RUN rm -rf /home/$VIRTUSER/$PROG-$VERS
+RUN rm -rf /root/$DVERS
+RUN rm -rf /root/$LVERS
+RUN rm -rf /root/$LDVERS
+
+# Environment
+WORKDIR /home/$VIRTUSER
+USER opennsm
+
+############# TCPDUMP ###########
+
+
