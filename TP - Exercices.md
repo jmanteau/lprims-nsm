@@ -50,21 +50,17 @@ Vous devez analyser le pcap pour voir comment l'accès youtube a été pertubé.
   * argus (réutiliser le fichier généré précédemment)
   * bro (générer les fichier de log avec bro -r. Quel fichier généré semble pertinent pour cette question ?).
 * Quelles sont les IPs de youtube (donner les /24) ?
-
   * Quel outil est le plus pertinent parmi les précédents au des niveau d'informations fournis ?
   * A l'aide de bro-cut et du fichier dns.log, obtenir les réseaux de Youtube.
   * Quel autre outil aurait pu t'on utiliser ?
 * Quels sont l'état des connections TCP vers ces IPs (prendre le /16 74.125 pour cette question) ?
-
   * Quel outil est le plus pertinent parmi les précédents ?
   * A l'aide de bro-cut et du fichier conn.log, donner les trois états de connections les plus présents. 
 * Quelle attaque a été faite ?
-
-  * Au vu de [TCP state in Bro](<https://www.bro.org/sphinx/scripts/base/protocols/conn/main.bro.html>), quel état TCP est anormalement représenté dans cette capture ?
-  * Grapher cet état TCP filtré avec le réseau 74.125.0.0/26 à l'aide de ragraph 
+    * Au vu de [TCP state in Bro](<https://www.bro.org/sphinx/scripts/base/protocols/conn/main.bro.html>), quel état TCP est anormalement représenté dans cette capture ?
+    * Grapher cet état TCP filtré avec le réseau 74.125.0.0/26 à l'aide de ragraph 
 * Combien de temps d'interruption (arrondir à la minute) ?
-
-  * Utiliser Wireshark pour cela : afficher que les paquets dont l'IP source est 74.125.0.0/16 avec le tcp flag reset  et le tcp flage ack présents 
+    * Utiliser Wireshark pour cela : afficher que les paquets dont l'IP source est 74.125.0.0/16 avec le tcp flag reset  et le tcp flage ack présents 
 * Que voit Snort sur ce pcap (ne pas oublier d'utiliser d'utiliser u2spewfoo pour le fichier de log binaire généré par Snort) ?
 * Est-ce que les alertes vous semble justifiées ? Utiliser le site [Emerging Threats](<https://doc.emergingthreats.net/>) via l'URL https://doc.emergingthreats.net/bin/view/Main/RULEID pour cela.
 * Quel est la dernière version d'Ubuntu au moment de la capture ?
